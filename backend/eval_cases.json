@@ -1,0 +1,74 @@
+[
+  {
+    "question": "What did we quote Zenith Bank and how were the payments staged?",
+    "expect_doc": "zenith_bank",
+    "expect_keywords": ["450,000"],
+    "note": "Price lookup for a named client. Tests intent=price plus the section prior."
+  },
+  {
+    "question": "Which engagements used a dedicated team model rather than a fixed bid?",
+    "expect_doc": "atlas_insurance",
+    "expect_keywords": ["dedicated team"],
+    "note": "Pure metadata filter. Fails loudly if engagement_model extraction regresses."
+  },
+  {
+    "question": "Have we delivered anything in healthcare that had to meet HIPAA?",
+    "expect_doc": "meridian_health",
+    "expect_keywords": ["HIPAA"],
+    "note": "Industry filter combined with a semantic query."
+  },
+  {
+    "question": "Who did we build a Kafka event pipeline for, and what throughput did it handle?",
+    "expect_doc": "northwind_logistics",
+    "expect_keywords": ["18,000"],
+    "note": "Technology filter. Two documents use Kafka, so ranking matters, not just recall."
+  },
+  {
+    "question": "Describe your approach to quality assurance and test automation.",
+    "expect_doc": "capability",
+    "expect_keywords": ["80%"],
+    "note": "A real RFP question. Tests the quality intent and the section prior."
+  },
+  {
+    "question": "What fixed-bid work have we done for under $200,000?",
+    "expect_doc": "lumen_retail",
+    "expect_keywords": ["180,000"],
+    "note": "Numeric filter an embedding cannot represent. Tests filter pushdown."
+  },
+  {
+    "question": "What were the measured outcomes of the Northwind fleet tracking project?",
+    "expect_doc": "northwind_logistics",
+    "expect_keywords": ["89%"],
+    "note": "Outcome intent; the figures live in a Results section."
+  },
+  {
+    "question": "What security certifications and compliance frameworks do we hold?",
+    "expect_doc": "capability",
+    "expect_keywords": ["ISO 27001"],
+    "note": "Security intent against the firm-level capability document."
+  },
+  {
+    "question": "What is the SLA for a severity 1 incident on the Atlas engagement?",
+    "expect_doc": "atlas_insurance",
+    "expect_keywords": ["one-hour"],
+    "note": "Specific fact buried deep in an SOW. Tests chunk-level recall."
+  },
+  {
+    "question": "Which projects used React Native?",
+    "expect_doc": "zenith_bank",
+    "expect_keywords": ["React Native"],
+    "note": "Guards the longest-match tech tagging; must not also demand plain React."
+  },
+  {
+    "question": "What was the total contract value of the Atlas Insurance claims platform?",
+    "expect_doc": "atlas_insurance",
+    "expect_keywords": ["920,000"],
+    "note": "Guards the anchored money extractor against picking a nearby figure."
+  },
+  {
+    "question": "Have we ever built anything in the automotive industry?",
+    "expect_doc": "",
+    "expect_keywords": [],
+    "note": "Negative case. The corpus has no automotive work; the system must not invent one."
+  }
+]

@@ -1,0 +1,16 @@
+services:
+  proposalpilot:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Optional. Without it the app runs in offline mode: retrieval, the
+      # vector index and the evaluation harness all work, and answers become
+      # extractive quotations instead of generated prose.
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CORS_ORIGINS: http://localhost:8000
+    volumes:
+      - proposalpilot-data:/app/backend/data
+
+volumes:
+  proposalpilot-data:

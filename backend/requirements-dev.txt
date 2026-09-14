@@ -1,0 +1,4 @@
+# Test-only dependencies. Kept out of requirements.txt so the run scripts
+# never install a test framework into a user's runtime environment.
+pytest>=8.0
+httpx>=0.27
