@@ -1,0 +1,2 @@
+# proposal-pilot
+ RAG assistant over a consulting firm's proposal library: ask what you quoted and who you built it for, or turn an RFP question into a cited draft response. FastAPI + React, Gemini, sqlite-vec. Recall@6 1.00, MRR 0.96.
