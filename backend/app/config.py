@@ -59,6 +59,29 @@ class Settings(BaseSettings):
     rrf_k: int = int(os.getenv("RRF_K", "60"))
     min_confidence: float = float(os.getenv("MIN_CONFIDENCE", "0.18"))
 
+    # --- Report Lab (long / visual reports) ---
+    # Reports are embedded locally (fastembed, ONNX on CPU): a 200-page report
+    # is ~1,000 chunks, which would take minutes against the free-tier
+    # embedding quota and seconds locally.
+    # arctic-embed-xs: 384-d, 512-token window, ~2.3x faster than bge-small on
+    # CPU at comparable retrieval quality (measured: 200 GEP chunks in 16s vs 37s).
+    report_embed_model: str = os.getenv("REPORT_EMBED_MODEL", "snowflake/snowflake-arctic-embed-xs")
+    report_embed_dim: int = int(os.getenv("REPORT_EMBED_DIM", "384"))
+    report_rerank_model: str = os.getenv("REPORT_RERANK_MODEL", "Xenova/ms-marco-MiniLM-L-6-v2")
+    model_cache_dir: Path = BACKEND_DIR / "data" / "models"
+    report_chunk_chars: int = int(os.getenv("REPORT_CHUNK_CHARS", "1200"))
+    report_chunk_overlap: int = int(os.getenv("REPORT_CHUNK_OVERLAP", "200"))
+    report_candidates: int = int(os.getenv("REPORT_CANDIDATES", "40"))
+    report_rerank_pool: int = int(os.getenv("REPORT_RERANK_POOL", "28"))
+    report_final_k: int = int(os.getenv("REPORT_FINAL_K", "7"))
+    report_context_chars: int = int(os.getenv("REPORT_CONTEXT_CHARS", "14000"))
+    # Vision transcription of charts/call-outs: only for short documents,
+    # where facts live in graphics and the page count keeps the cost bounded.
+    vision_enabled: bool = os.getenv("VISION_ENABLED", "true").lower() == "true"
+    vision_max_pages: int = int(os.getenv("VISION_MAX_PAGES", "30"))
+    vision_dpi: int = int(os.getenv("VISION_DPI", "110"))
+    vision_workers: int = int(os.getenv("VISION_WORKERS", "4"))
+
     # --- server ---
     cors_origins: str = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     max_upload_mb: int = int(os.getenv("MAX_UPLOAD_MB", "25"))

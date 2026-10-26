@@ -9,10 +9,15 @@ python-dotenv>=1.0
 # --- Document parsing ---
 pypdf>=4.0
 python-docx>=1.1
+# Report Lab: layout-aware PDF parsing (font sizes, positions, outline,
+# page rendering for vision and for the evidence viewer).
+pymupdf>=1.24
 
 # --- Retrieval ---
 numpy>=1.26
 rank-bm25>=0.2.2
+# Report Lab: local ONNX embedder + cross-encoder reranker (CPU, no API quota).
+fastembed>=0.4
 
 # --- Vector storage ---
 # sqlite-vec: ANN search as a SQLite extension. No server, no Docker, but a

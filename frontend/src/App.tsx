@@ -6,9 +6,10 @@ import { DocumentModal } from './components/DocumentModal'
 import { EvalPage } from './components/EvalPage'
 import { SourcesPanel } from './components/SourcesPanel'
 import { StatsPage } from './components/StatsPage'
+import { ReportLab } from './reports/ReportLab'
 import type { ChatMessage, DocumentRecord, Mode } from './types'
 
-type Tab = 'chat' | 'stats' | 'eval'
+type Tab = 'chat' | 'reports' | 'stats' | 'eval'
 
 const SUGGESTIONS: { label: string; mode: Mode }[] = [
   { label: 'What fixed-bid work have we done under $200k?', mode: 'answer' },
@@ -180,9 +181,9 @@ export default function App() {
         </div>
 
         <nav className="tabs">
-          {(['chat', 'stats', 'eval'] as Tab[]).map((name) => (
+          {(['chat', 'reports', 'stats', 'eval'] as Tab[]).map((name) => (
             <button key={name} className="tab" data-active={tab === name} onClick={() => setTab(name)}>
-              {name === 'chat' ? 'Ask' : name === 'stats' ? 'Corpus' : 'Evaluation'}
+              {{ chat: 'Proposal library', reports: 'Report Lab', stats: 'Corpus', eval: 'Evaluation' }[name]}
             </button>
           ))}
         </nav>
@@ -197,6 +198,9 @@ export default function App() {
         </div>
       </header>
 
+      {tab === 'reports' ? (
+        <ReportLab notify={notify} />
+      ) : (
       <div className="layout">
         {tab === 'chat' && (
           <DocumentLibrary
@@ -395,6 +399,7 @@ export default function App() {
 
         {tab === 'chat' && <SourcesPanel citations={lastAssistant?.citations ?? []} highlighted={highlighted} />}
       </div>
+      )}
 
       {inspecting && <DocumentModal doc={inspecting} onClose={() => setInspecting(null)} />}
       {toast && <div className="toast" data-tone={toast.tone}>{toast.text}</div>}

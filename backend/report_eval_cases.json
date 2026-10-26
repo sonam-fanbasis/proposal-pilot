@@ -1,0 +1,83 @@
+[
+  {
+    "report": "gpo",
+    "use_case": "1 · Plain-text baseline",
+    "question": "How many depository libraries did GPO staff visit in FY 2018?",
+    "expect_keywords": ["166"],
+    "expect_pages": [5, 21],
+    "expect_section": "",
+    "reference": "GPO staff visited 166 depository libraries in 25 states in FY 2018 (3-year total over 610)."
+  },
+  {
+    "report": "gpo",
+    "use_case": "1 · Plain-text baseline",
+    "question": "What new digital system replaced FDsys, and when was it fully deployed?",
+    "expect_keywords": ["govinfo", "2018"],
+    "expect_pages": [4, 8, 10, 22],
+    "expect_section": "",
+    "reference": "govinfo replaced FDsys; it left beta in December 2017, was deployed full-scale during FY 2018, and FDsys was retired in December 2018."
+  },
+  {
+    "report": "gpo",
+    "use_case": "1 · Plain-text baseline",
+    "question": "How much did GPO procure in printing and information products in FY 2018 on behalf of federal agencies?",
+    "expect_keywords": ["375"],
+    "expect_pages": [5, 14],
+    "expect_section": "",
+    "reference": "More than $375 million (By the Numbers: $375.7 million in procured printing revenue; 84,000+ orders)."
+  },
+  {
+    "report": "gep",
+    "use_case": "2 · Long, structured report",
+    "question": "What is the growth outlook for South Asia in this report?",
+    "expect_keywords": ["6.3"],
+    "expect_pages": [96, 97, 98],
+    "expect_section": "South Asia",
+    "reference": "SAR growth is expected to soften to 6.3 percent in 2026, then pick up to an average of 7 percent a year in 2027–28; India 6.6 percent in FY2026/27."
+  },
+  {
+    "report": "gep",
+    "use_case": "2 · Long, structured report",
+    "question": "What does Chapter 3 say about sovereign debt in developing economies?",
+    "expect_keywords": ["interest rate"],
+    "expect_pages": [107, 108, 109, 110, 111, 112],
+    "expect_section": "Ch. 3",
+    "reference": "Rising government debt raises EMDE interest rates (spreads and domestic yields), debt-service costs and distress risk; the effect is non-linear; the post-2010 debt rise is associated with ~110 bp higher spreads and ~30 bp higher yields."
+  },
+  {
+    "report": "gep",
+    "use_case": "2 · Long, structured report",
+    "question": "According to the executive summary, what are the main risks to the global outlook?",
+    "expect_keywords": ["downside", "trade"],
+    "expect_pages": [19],
+    "expect_section": "Executive Summary",
+    "reference": "Risks are skewed to the downside: renewed escalation of hostilities / prolonged commodity disruptions (growth could fall to 1.3 percent in 2026 with financial stress), trade policy uncertainty, geopolitical strains, weather shocks; upside from AI."
+  },
+  {
+    "report": "imac",
+    "use_case": "3 · Short, visual report",
+    "question": "How much less energy does iMac use compared to the ENERGY STAR requirement?",
+    "expect_keywords": ["58"],
+    "expect_pages": [7],
+    "expect_section": "",
+    "reference": "58 percent less energy than the ENERGY STAR requirement (footnote 18)."
+  },
+  {
+    "report": "imac",
+    "use_case": "3 · Short, visual report",
+    "question": "What is the total carbon footprint of the iMac, and how much of that comes from product use versus manufacturing?",
+    "expect_keywords": ["346", "45", "50"],
+    "expect_pages": [2, 10],
+    "expect_section": "",
+    "reference": "346 kg CO2e for iMac (two ports) 256GB; production 50%, product use 45%, transportation 5%, end-of-life <1%."
+  },
+  {
+    "report": "imac",
+    "use_case": "3 · Short, visual report",
+    "question": "What material is the iMac stand made from, and what percentage of it is recycled?",
+    "expect_keywords": ["aluminum", "100"],
+    "expect_pages": [1, 2, 4],
+    "expect_section": "",
+    "reference": "Aluminum — 100 percent recycled aluminum in the stand."
+  }
+]

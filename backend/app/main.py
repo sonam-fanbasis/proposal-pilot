@@ -16,11 +16,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import db, eval as eval_mod, ingestion, llm, vectorstore
+from . import db, eval as eval_mod, ingestion, llm, report_store, vectorstore
 from .config import get_settings
 from .embeddings import active_backend
 from .generation import generate, generate_stream, verify_citations
 from .parsing import SUPPORTED_EXTENSIONS
+from .reports_api import router as reports_router
 from .retrieval import retrieve
 from .schemas import (
     AskRequest, AskResponse, ConversationOut, DocumentOut, EvalRunRequest,
@@ -34,6 +35,7 @@ settings = get_settings()
 async def lifespan(_app: FastAPI):
     """Create the schema and seed evaluation cases before serving traffic."""
     db.init_db()
+    report_store.init()
     if not db.query_one("SELECT 1 FROM eval_cases LIMIT 1"):
         try:
             eval_mod.seed_cases()
@@ -48,6 +50,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+app.include_router(reports_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
