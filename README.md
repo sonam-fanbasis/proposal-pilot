@@ -67,9 +67,51 @@ Tests and evaluation:
 
 ```bash
 cd backend
-.venv/bin/python -m pytest tests/ -q          # 49 tests
+.venv/bin/python -m pytest tests/ -q          # 62 tests
 .venv/bin/python seed.py --reset --eval       # re-index and print retrieval metrics
 ```
+
+---
+
+## Report Lab — advanced RAG for three document shapes
+
+The **Report Lab** tab is the advanced-RAG exercise: one pipeline that adapts to
+three intentionally different documents instead of chunking everything the same way.
+
+| Use case | Document | Shape detected | What had to change |
+|---|---|---|---|
+| 1 · Plain text | GPO 2018 Annual Report (82 pp.) | Narrative | Run-in headings ("**History** From the Mayflower…") and font-family headings recovered; running headers stripped; "By the Numbers" label/value panels rebuilt as tables |
+| 2 · Long & structured | Global Economic Prospects, June 2026 (200 pp.) | Long & structured | PDF outline re-levelled into chapter → section → subsection; bookmarks moved to the page their title is printed on (otherwise the Middle East forecast table is filed under *South Asia*); chunks never cross a section; **query routing** to chapters, boxes, regions and the executive summary; broken "Th" ligature repaired ("Te global economy") |
+| 3 · Visual | iMac Product Environmental Report (12 pp.) | Visual | Charts and icon call-outs transcribed by Gemini vision; borderless tables and label/value panels rebuilt from page geometry; superscript footnote markers linked to their endnotes and embedded with the claim they qualify |
+
+**Pipeline:** layout parsing (PyMuPDF spans: size, family, position) → typed elements
+(heading, text, table, figure, footnote, note) → section-aware chunks with full section
+path → local embeddings (`snowflake-arctic-embed-xs`, ONNX on CPU — a 200-page report
+embeds in ~75 s with no API quota) in `sqlite-vec` with `report_id`/`section` metadata →
+**section routing** → dense + BM25 → RRF (routed lists weighted ×2) → **cross-encoder
+rerank** (`ms-marco-MiniLM-L-6-v2`) → neighbour expansion + linked footnotes under a
+character budget → grounded generation with citation verification.
+
+**Measured:** all nine sample questions from the use-case document pass end to end —
+retrieval hit rate 1.0, MRR 1.0, scope precision 1.0 (every evidence chunk for
+"South Asia", "Chapter 3" and "the executive summary" came from that section),
+0 uncited claims. Full answers: [`docs/report-lab-benchmark.md`](docs/report-lab-benchmark.md).
+
+```bash
+cd backend
+# ingest the three reports and run the benchmark (writes a markdown report)
+.venv/bin/python -m app.report_eval --ingest ../test_upload/*.pdf --out report.md
+.venv/bin/python -m app.report_eval --no-answers   # retrieval metrics only, no LLM calls
+```
+
+In the UI each answer shows which section it was routed to, which evidence types it
+used (TEXT / TABLE / CHART / NOTE / FOOTNOTE), a per-stage timing trace, and every
+citation opens the rendered source page. *How it was indexed* shows the detected shape,
+the recipe applied and what parsing found; *Benchmark* runs the sample questions.
+
+New modules: `report_parsing.py`, `report_chunking.py`, `report_models.py`,
+`report_store.py`, `report_retrieval.py`, `report_generation.py`, `report_eval.py`,
+`reports_api.py`; frontend in `frontend/src/reports/`.
 
 ---
 
@@ -241,7 +283,7 @@ backend/
     ingestion.py     the write path, run on a background thread
     eval.py          recall@k, MRR, keyword coverage, grounding
     main.py          FastAPI routes, SSE streaming, static SPA
-  tests/             49 tests
+  tests/             62 tests
   seed.py            index the sample library, optionally run the eval
 frontend/            React + TypeScript + Vite
 sample_docs/         six realistic proposals, case studies, an SOW, a capability deck
@@ -258,6 +300,12 @@ behind each one.
 | `GET` | `/api/documents` | Library with extracted metadata and status |
 | `GET` | `/api/documents/{id}/chunks` | Exactly what was indexed, headers included |
 | `POST` | `/api/ask` | Answer or draft, with citations and a retrieval trace |
+| `POST` | `/api/reports` | Report Lab upload (PDF); layout-parse, chunk, embed in the background |
+| `GET` | `/api/reports/{id}/sections` | The section tree with page ranges |
+| `GET` | `/api/reports/{id}/chunks?type=table` | Typed chunks (text, table, figure, footnote, note) |
+| `GET` | `/api/reports/{id}/pages/{n}.png` | Rendered page, for evidence previews |
+| `POST` | `/api/reports/ask/stream` | Routed, reranked, cited answer over SSE with a full trace |
+| `POST` | `/api/reports/eval` | Run the use-case sample questions |
 | `POST` | `/api/ask/stream` | Same, as SSE: `meta` → `token`… → `done` |
 | `GET` | `/api/facets` | Industry / tech / type coverage of the corpus |
 | `GET` | `/api/stats` | Corpus size, active backends, real retrieval latency |
